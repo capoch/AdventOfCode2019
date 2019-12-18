@@ -1,44 +1,34 @@
 class Intcode:
-
+  
+  _receiver = None
   relativeBase = 0
-  codesProcessed = 0
 
   def __init__(self, memory):
-    emptyMemory = [0 for d in range(0,100000000)]
     self.opcodes = memory
-    self.opcodes.extend(emptyMemory)
-    print("total length of memory: " + str(len(self.opcodes)))
 
-  def mode(self, pointer, modeNumber, delta,debugMode):
+  def setReceiver(self,receiver):
+    self._receiver = receiver
+ 
+  def mode(self, pointer, modeNumber, delta):
     if modeNumber == 0:
-      if(debugMode):
-        print(str(pointer) + ": positional mode")
       return self.opcodes[self.opcodes[pointer+delta]]
     elif modeNumber == 1:
-      if(debugMode):
-        print(str(pointer) + ": absolute mode")
       return self.opcodes[pointer+delta]
     elif modeNumber ==2:
-      if(debugMode):
-        print(str(pointer) + ": relative mode with current base" + str(self.relativeBase))
-      return self.opcodes[self.relativeBase + self.opcodes[pointer+delta]]
+      return self.opcodes[relativeBase + opcodes[pointer+delta]]
     else:
       print("invalid mode")
-
-  def runProgram(self, input, debugMode):
+  def runProgram(self, input):
     self.input = input
     pointer = 0
     output = None
     inputCounter = 0;
-
     while(True):
-      if(debugMode):
-        print("At pointer: " + str(pointer))
-      instructionList = self.analyzeOpcode(self.opcodes[pointer], debugMode)
+      instructionList = self.analyzeOpcode(self.opcodes[pointer])
       if instructionList[0]!=99:
-        leftValue = self.mode(pointer,instructionList[1],1,debugMode)
+        leftValue = self.mode(pointer,instructionList[1],1)
       if instructionList[0]==1 or instructionList[0]==2 or instructionList[0]==5 or instructionList[0]==6 or instructionList[0]==7 or instructionList[0]==8:
-        rightValue = self.mode(pointer,instructionList[2],2, debugMode)
+        rightValue = self.mode(pointer,instructionList[2],2)
       if instructionList[0]==99:
         break
       elif instructionList[0]==1:
@@ -48,15 +38,14 @@ class Intcode:
         self.opcodes[self.opcodes[pointer+3]] = leftValue * rightValue
         pointer += 4
       elif instructionList[0]==3:
-        print(leftValue)
-        self.opcodes[leftValue]=input[inputCounter]
+        self.opcodes[self.opcodes[pointer+1]]=input[inputCounter]
         if inputCounter == 0:
           self.state = input[inputCounter]
         inputCounter += 1
         pointer += 2
       elif instructionList[0]==4:
         output = leftValue
-        print("Program Output: " +str(leftValue))
+        #print leftValue
         pointer += 2
       elif instructionList[0]==5:
         if leftValue != 0:
@@ -81,18 +70,18 @@ class Intcode:
           self.opcodes[self.opcodes[pointer+3]]=0
         pointer += 4
       elif instructionList[0]==9:
-        self.relativeBase += leftValue
-        pointer += 2
+        self.relativeBase = self.opcodes[pointer+1]
       else:
         print "Invalid Action Code(" + str(instructionList[0]) + ") you fucktard"
         print pointer
         break
-    if(debugMode):
-      print "final pointer: " + str(pointer)
+    print "total pointer count: " + str(pointer)
     return output
 
-  def analyzeOpcode(self,opcode, debugMode):
-    self.codesProcessed += 1
+  def callReceiver(receiver, input):
+    receiver.runProgram(input)
+
+  def analyzeOpcode(self,opcode):
     if len(str(opcode))==1:
       return [opcode,0,0]
     else:
@@ -105,7 +94,5 @@ class Intcode:
       indicatorTwo = int(str(opcode)[-4:-3])
     else:
       indicatorTwo = 0
-    if(debugMode):
-      print("actionCode " + str(actionCode)) 
     return [actionCode, indicatorOne, indicatorTwo]
 

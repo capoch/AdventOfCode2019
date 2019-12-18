@@ -3,7 +3,8 @@ from resourceTree import ResourceTreeNode, ResourceTree
 def main():
   inputLocation = 'input.txt'
   ingredientList = loadInput(inputLocation)
-
+  for ingredient in ingredientList:
+    print(ingredient)
   completeRecipe = ResourceTree(ingredientList, "FUEL", 1)
 
 def loadInput(inputLocation):
