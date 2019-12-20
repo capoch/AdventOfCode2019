@@ -1,20 +1,12 @@
-class Receiver:
-  def forwardData(self,output):
-    return output
-
 class Intcode:
-  receivers = []
-  positionList = list()
+
   relativeBase = 0
   codesProcessed = 0
 
-
-  def __init__(self, memory, sender, receivers):
+  def __init__(self, memory):
     emptyMemory = [0 for d in range(0,1000000)]
     self.opcodes = memory
     self.opcodes.extend(emptyMemory)
-    self.sender = sender
-    self.receivers = receivers
     print("total length of memory: " + str(len(self.opcodes)))
 
   def mode(self, pointer, modeNumber, delta,debugMode):
@@ -33,12 +25,13 @@ class Intcode:
     else:
       print("invalid mode")
 
-  def runProgram(self, debugMode):
+  def runProgram(self, input, debugMode):
+    self.input = input
     pointer = 0
     output = None
     inputCounter = 0;
 
-    while(True):# and self.codesProcessed < 90):
+    while(True):
       if(debugMode):
         print("At pointer: " + str(pointer))
       instructionList = self.analyzeOpcode(self.opcodes[pointer], debugMode)
@@ -57,14 +50,14 @@ class Intcode:
         self.opcodes[targetValue] = self.opcodes[leftValue] * self.opcodes[rightValue]
         pointer += 4
       elif instructionList[0]==3:
-        self.opcodes[leftValue]=self.sender[inputCounter]
+        self.opcodes[leftValue]=input[inputCounter]
+        if inputCounter == 0:
+          self.state = input[inputCounter]
         inputCounter += 1
         pointer += 2
       elif instructionList[0]==4:
         output = self.opcodes[leftValue]
-        self.sendToReceivers(output, debugMode)
-        if(debugMode):  
-          print("Program Output: " +str(self.opcodes[leftValue]))
+        print("Program Output: " +str(self.opcodes[leftValue]))
         pointer += 2
       elif instructionList[0]==5:
         if self.opcodes[leftValue] != 0:
@@ -97,13 +90,12 @@ class Intcode:
         break
     if(debugMode):
       print("final pointer: " + str(pointer))
-    return self.receivers[0].shipMap
-    #return self.receivers[0].positionList
+    return output
 
   def analyzeOpcode(self,opcode, debugMode):
     self.codesProcessed += 1
     if len(str(opcode))==1:
-      return [opcode,0,0,0]
+      return [opcode,0,0]
     else:
       actionCode = int(str(opcode)[-2:])
     if len(str(opcode)) >= 3:
@@ -122,8 +114,3 @@ class Intcode:
       print("actionCode " + str(actionCode)) 
     return [actionCode, indicatorOne, indicatorTwo, indicatorThree]
 
-  def sendToReceivers(self, output, debugMode=False):
-    for receiver in self.receivers:
-      if(debugMode):
-        print("Receiver " + receiver.name + " called")
-      receiver.forwardData(output)
