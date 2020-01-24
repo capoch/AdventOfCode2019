@@ -5,7 +5,12 @@ class ResourceTreeNode:
     self.children = []
 
   def __str__(self):
-    return str(self.load) + " of " + self.name
+    string = str(self.load) + " of " + self.name + ":"
+    for child in self.children:
+      childstring = str(child.load) + " of " + child.name +  ", "
+      string += childstring
+
+    return string
 
   def addChild(self, child):
     self.children.append(child)

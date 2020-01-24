@@ -1,4 +1,4 @@
-from intcode import Intcode
+from intcode2 import Intcode
 from itertools import permutations 
 
 def main():
@@ -25,8 +25,8 @@ def main():
       currentMax = newValue
       bestSetting = sequence
 
-  print bestSetting
-  print currentMax
+  print(bestSetting)
+  print(currentMax)
 
 
 
