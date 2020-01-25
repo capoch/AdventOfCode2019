@@ -4,33 +4,35 @@ import math
 def main():
   asteroidMap = Map('input.txt').getAsteroids()
   polarMap = set()
+  # cannonBase determined in first part of exercise
   cannonBase = Point(23,29)
+  asteroidMap.remove(cannonBase)
   for asteroid in asteroidMap:
-    newPoint = asteroid.changeCenterOfCoordinates(cannonBase.x, cannonBase.y).flipYAxis().convertToPolar()
+    newPoint = asteroid.changeCenterOfCoordinates(cannonBase[0], cannonBase[1]).flipYAxis().convertToPolar()
     polarMap.add(newPoint)
   asteroidDict = dict()
   for point in polarMap:
-    if point.y in asteroidDict.keys():
-      asteroidDict[point.y].append(point.x)
+    if point[1] < 0:
+      angle = point[1] + 2 * math.pi
     else:
-      asteroidDict[point.y] = [point.x]
+      angle = point[1]
+    if point[1] in asteroidDict.keys():
+      asteroidDict[angle].append(point[0])
+    else:
+      asteroidDict[angle] = [point[0]]
   keyList = []
   for key in asteroidDict.keys():
     keyList.append(key)
 
-  for key in keyList:
-    if key < 0:
-      key += 2 * math.pi
-
   keyList.sort()
+  print(keyList)
   targetAngle = keyList[199]
-  if targetAngle > math.pi:
-    targetAngle -= 2 * math.pi
   distanceRange = asteroidDict[targetAngle]
   distanceRange.sort()
   targetDistance = distanceRange[0]
 
-  print(targetDistance, targetAngle)
-  print(targetDistance * math.sin(targetAngle), targetDistance * math.cos(targetAngle))
+  result = Point(targetDistance, targetAngle).convertToCartesian().flipYAxis().changeCenterOfCoordinates(-cannonBase[0], -cannonBase[1])
+  print(result[0], result[1])
+  print("result: " + str(100*round(result[0])+round(result[1])))
 
 main()

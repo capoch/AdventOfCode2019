@@ -1,29 +1,37 @@
 import math
 
-class Point:
-  def __init__(self, x, y):
-    self.x = x
-    self.y = y
+class Point(tuple):
+  def __new__(self, x, y):
+    return tuple.__new__(Point,(x,y))
 
   def __str__(self):
-    return "Point(" + str(self.x) + ", " + str(self.y) + ")"
+    return "Point(" + str(self[0]) + ", " + str(self[1]) + ")"
+
+  #def __getitem__(self, x):
+  #  if x==0 or x==1:
+  #    return self[x]
+  #  else:
+  #    print("Point is two-dimensionally implemeted")
 
   def distanceFrom(self, pointX):
-    return math.sqrt(math.pow(pointX.y - self.y, 2) + math.pow(pointX.x - self.x, 2))
+    return math.sqrt(math.pow(pointX.y - self[1], 2) + math.pow(pointX.x - self[0], 2))
 
   def convertToPolar(self):
-    return Point(math.sqrt(math.pow(self.x,2)+math.pow(self.y,2)),math.atan2(self.x,-1 * self.y))
+    return Point(math.sqrt(math.pow(self[0],2)+math.pow(self[1],2)),math.atan2(self[0], self[1]))
+
+  def convertToCartesian(self):
+    return Point(self[0] * math.sin(self[1]), self[0] * math.cos(self[1]))
 
   def changeCenterOfCoordinates(self, centerX, centerY):
-    return Point(self.x-centerX, self.y-centerY)
+    return Point(self[0]-centerX, self[1]-centerY)
 
   def flipYAxis(self):
-    return Point(self.x, - self.y)
+    return Point(self[0], - self[1])
 
 class Vector:
   def __init__(self,point):
-    self.x = point.x
-    self.y = point.y
+    self.x = point[0]
+    self.y = point[1]
 
   def __init__(self, x, y):
     self.x = x

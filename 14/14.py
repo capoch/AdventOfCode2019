@@ -22,8 +22,4 @@ def loadInput(inputLocation):
 
   return ingredientList
 
-
-
-
-
 main()
