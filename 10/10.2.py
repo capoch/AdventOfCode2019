@@ -1,3 +1,11 @@
+# Solution approach:
+# Transforming map of asteroids to a map in polar coordinates with the center on the Laser
+# and the angle is measured from starting position of the laser clockwise (same way the laser turns)
+# We then are looking for the 200th angle (counting by raising size starting with 0).
+# Then find the polar point with said angle and smallest radius. Transform back to initial
+# coordinate system
+
+
 from geometry import Point, Vector, Map
 import math
 
