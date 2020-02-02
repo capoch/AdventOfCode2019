@@ -1,25 +1,35 @@
-from resourceTree import ResourceTreeNode, ResourceTree
+from resourceTree import ResourceTreeNode
 
 def main():
-  inputLocation = 'input.txt'
-  ingredientList = loadInput(inputLocation)
-  for ingredient in ingredientList:
-    print(ingredient)
-  completeRecipe = ResourceTree(ingredientList, "FUEL", 1)
+  inputLocation = 'input_final.txt'
+  data = loadInput(inputLocation)
+  recipes = data[0]
+  leftovers = data[1]
+  rootRecipe = recipes.get("FUEL")
+  root = ResourceTreeNode(rootRecipe, leftovers)
+  root.createTree(recipes, leftovers)
+  root.recalculate(recipes, leftovers)
+  print("Total amount of ORE needed: " + str(root.countElement("ORE")))
 
 def loadInput(inputLocation):
-  ingredientList = []
+  recipes = dict()
+  leftovers = dict()
   with open(inputLocation, 'r') as input:
     for line in input.read().splitlines():
       segments = line.split(" => ")
       compositeTargetIngredient = segments[1]
       targetIngredient = compositeTargetIngredient.split(" ")
-      recipe = ResourceTreeNode(1, targetIngredient[1])
+      targetIngredientName = targetIngredient[1]
+      targetIngredientAmount = int(targetIngredient[0])
+      recipe = list()
+      recipe.append(targetIngredient)
+      ingredients = list()
       for compositeIngredient in segments[0].split(", "):
         ingredient = compositeIngredient.split(" ")
-        recipe.addChild(ResourceTreeNode(int(ingredient[0])/int(targetIngredient[0]), ingredient[1]))
-      ingredientList.append(recipe)
-
-  return ingredientList
+        leftovers[ingredient[1]] = 0
+        ingredients.append(ingredient)
+      recipe.append(ingredients)
+      recipes[targetIngredient[1]] = recipe
+  return (recipes, leftovers)
 
 main()
