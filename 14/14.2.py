@@ -19,24 +19,17 @@ def main():
 
   lowerBound = oreStored // getOreNeededForFuel(1, root, recipes, leftovers)
   upperBound = 10 * lowerBound
-  print(upperBound)
+
   counter = 0
-  print("before while loop")
   while getOreNeededForFuel(upperBound, root, recipes, leftovers) < oreStored:
-    print("in while loop")
     lowerBound = upperBound
 
     upperBound = 10*lowerBound
-    print("New upperbound = " + str(upperBound))
 
-  print("upperbound determined to be " + str(upperBound))
 
   while lowerBound < upperBound - 1:
     mid = (lowerBound + upperBound) // 2
     ore = getOreNeededForFuel(mid, recipes, leftovers)
-    if counter % 5 == 0:
-      print("low = " + str(lowerBound))
-      print("high= " + str(upperBound))
     if ore < oreStored:
       lowerBound = mid
     elif ore > oreStored:

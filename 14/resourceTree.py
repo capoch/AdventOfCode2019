@@ -32,12 +32,6 @@ class ResourceTreeNode:
     else:
       return '0'
 
-  def nodeContainsChlildOfType(self, name):
-    for child in self.children:
-      if child.name == name:
-        return True
-    return False
-
   def createTree(self, recipes, leftovers):
     currentNode = self
     ingredientList = recipes.get(currentNode.name)[1]
