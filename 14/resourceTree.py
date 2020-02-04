@@ -1,7 +1,6 @@
-from functools import reduce
 import time
 import math
-
+ 
 class ResourceTreeNode:
   def __init__(self, recipe,leftovers):
     self.name = recipe[0][1]
@@ -76,5 +75,7 @@ class ResourceTreeNode:
         return int(child.load) * child.multiplier
       else:
         oreCount += child.countElement(elementName)
+
+
 
     return oreCount
