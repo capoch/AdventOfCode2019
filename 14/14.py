@@ -1,19 +1,15 @@
 from resourceTree import ResourceTreeNode
-import time
 from shared import loadInput
 
 def main():
   oreStored = 1000000000000
-  fuelProduced = 0
-  treeCreationStartTime = time.time()
-  inputLocation = 'input_test.txt'
+  inputLocation = 'input_final.txt'
   data = loadInput(inputLocation)
   recipes = data[0]
   leftovers = data[1]
   rootRecipe = recipes.get("FUEL")
   root = ResourceTreeNode(rootRecipe, leftovers)
   root.createTree(recipes, leftovers)
-  print("--- Tree Creation Time in s %s ---" % (time.time() - treeCreationStartTime))
   oreForOneFuel = getOreNeededForFuel(1, root, recipes, leftovers)
   print("Ore for 1 FUEL = " + str(oreForOneFuel))
 
@@ -40,11 +36,9 @@ def main():
 
 def getOreNeededForFuel(fuelAmount, root, recipes, leftovers):
     root.multiplier = fuelAmount
-    recalculationStartTime = time.time()
     for key in leftovers.keys():
       leftovers[key] = 0
     root.recalculate(recipes, leftovers)
-    print("--- Tree Recalculation time in  seconds %s ---" % (time.time() - recalculationStartTime))
     return root.countElement("ORE")
 
 main()

@@ -4,7 +4,7 @@ import math
 class ResourceTreeNode:
   def __init__(self, recipe,leftovers):
     self.name = recipe[0][1]
-    self.load = recipe[0][0]
+    self.load = int(recipe[0][0])
     self.leftovers = leftovers
     self.multiplier = 1
     self.children = []
@@ -53,10 +53,10 @@ class ResourceTreeNode:
         leftovers[child.name] = childLeftovers - targetAmount
         child.multiplier = 0
       else :
-        child.multiplier = math.ceil((targetAmount - childLeftovers) / int(child.load))
-        leftovers[child.name] = childLeftovers + child.multiplier * int(child.load) - targetAmount
+        child.multiplier = math.ceil((targetAmount - childLeftovers) / child.load)
+        leftovers[child.name] = childLeftovers + child.multiplier * child.load - targetAmount
         
-        leftovers[child.name] = childLeftovers + child.multiplier * int(child.load) - targetAmount
+        leftovers[child.name] = childLeftovers + child.multiplier * child.load - targetAmount
       if child.name != "ORE":
         child.recalculate(recipes, leftovers)
 
@@ -69,13 +69,10 @@ class ResourceTreeNode:
         print(node)
 
   def countElement(self, elementName): 
-    oreCount = 0
+    elementCount = 0
     for child in self.children:
       if child.name == elementName:
-        return int(child.load) * child.multiplier
+        return child.load * child.multiplier
       else:
-        oreCount += child.countElement(elementName)
-
-
-
-    return oreCount
+        elementCount += child.countElement(elementName)
+    return elementCount
